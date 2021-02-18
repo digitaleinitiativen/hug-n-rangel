@@ -4,12 +4,14 @@ export default class PlayScene extends Phaser.Scene {
 
 		this.me = null;
 		this.cursors = null;
+		this.halos = null;
 		this.korpi = null;
 
 		this.D_ACCELERATION = 400;
 		this.D_MAXSPEED = 400;
 		this.D_DRAG = 500;
 		this.D_ACTION_RADIUS = 100;
+		this.D_HALO_RADIUS = 100;
 
 		this.keyH = null;
 		this.keyR = null;
@@ -18,6 +20,8 @@ export default class PlayScene extends Phaser.Scene {
 	}
 
 	create() {
+		this.halos = this.add.graphics();
+
 		this.me = this.makeMe(this.createKorpus(200, 200, 0xff0000));
 
 		this.korpi = this.add.group();
@@ -53,12 +57,26 @@ export default class PlayScene extends Phaser.Scene {
 			}
 		}
 
+		if(closest && closestDist <= this.D_HALO_RADIUS) {
+			this.halo(this.me, closest, closestDist);
+		}
+
 		if(actionable) {
 			if(Phaser.Input.Keyboard.JustDown(this.keyH))
 				this.hug(this.me, closest);
 			if(Phaser.Input.Keyboard.JustDown(this.keyR))
 				this.rangel(this.me, closest);
 		}
+	}
+
+	halo(a, b, d) {
+
+		this.halos.clear();
+		this.halos
+			.fillStyle(0x555555, 1 - d / this.D_HALO_RADIUS)
+			.fillCircle(a.body.center.x, a.body.center.y, d/2)
+			.fillCircle(b.body.center.x, b.body.center.y, d/2)
+		;
 	}
 
 	hug(a, b) {
