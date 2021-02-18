@@ -13,6 +13,9 @@ export default class PlayScene extends Phaser.Scene {
 	create() {
 		this.me = this.makeMe(this.createKorpus(200, 200, 0xff0000));
 
+		let theOtherGuy = this.createKorpus(100, 100, 0x00ff00);
+		let theOtherOtherGuy = this.createKorpus(300, 300, 0x0000ff);
+
 		this.cursors = this.input.keyboard.createCursorKeys();
 	}
 
