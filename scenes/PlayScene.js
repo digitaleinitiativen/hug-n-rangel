@@ -12,6 +12,7 @@ export default class PlayScene extends Phaser.Scene {
 		this.D_ACTION_RADIUS = 100;
 
 		this.keyH = null;
+		this.keyR = null;
 
 		this.inAction = false;
 	}
@@ -27,6 +28,7 @@ export default class PlayScene extends Phaser.Scene {
 
 		this.cursors = this.input.keyboard.createCursorKeys();
 		this.keyH = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.H);
+		this.keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
 	}
 
 	update() {
@@ -54,6 +56,8 @@ export default class PlayScene extends Phaser.Scene {
 		if(actionable) {
 			if(Phaser.Input.Keyboard.JustDown(this.keyH))
 				this.hug(this.me, closest);
+			if(Phaser.Input.Keyboard.JustDown(this.keyR))
+				this.rangel(this.me, closest);
 		}
 	}
 
@@ -77,7 +81,28 @@ export default class PlayScene extends Phaser.Scene {
 			},
 			callbackScope: this
 		});
+	}
 
+	rangel(a, b) {
+		a.body.stop();
+		b.body.stop();
+
+		this.inAction = true;
+
+		var tween = this.tweens.add({
+			targets: [a, b],
+			x: (a.body.center.x + b.body.center.x) / 2 + Math.random() * 8 - 4,
+			y: (a.body.center.y + b.body.center.y) / 2 + Math.random() * 8 - 4,
+			ease: 'Power1',
+			duration: 100,
+			hold: 0,
+			yoyo: true,
+			repeat: 6,
+			onComplete: function() {
+				this.inAction = false;
+			},
+			callbackScope: this
+		});
 	}
 
 	createKorpus(x, y, color, love = 1, rage = 0) {
