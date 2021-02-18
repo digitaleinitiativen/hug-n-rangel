@@ -9,7 +9,7 @@ const config = {
 	physics: {
 		default: 'arcade',
         arcade: {
-            debug: true,
+            debug: false,
             debugShowBody: true,
             debugShowStaticBody: true,
             debugShowVelocity: true,

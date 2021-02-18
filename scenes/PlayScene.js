@@ -10,8 +10,8 @@ export default class PlayScene extends Phaser.Scene {
 		this.D_ACCELERATION = 400;
 		this.D_MAXSPEED = 400;
 		this.D_DRAG = 500;
-		this.D_ACTION_RADIUS = 100;
-		this.D_HALO_RADIUS = 100;
+		this.D_ACTION_RADIUS = 200;
+		this.D_HALO_RADIUS = 200;
 
 		this.keyH = null;
 		this.keyR = null;
@@ -27,7 +27,7 @@ export default class PlayScene extends Phaser.Scene {
 	create() {
 		this.halos = this.add.graphics();
 
-		this.me = this.makeMe(this.createKorpus(200, 200, 0xff0000));
+		this.me = this.makeMe(this.createKorpus(200, 200, 0xff0000, 1, 1));
 
 		this.korpi = this.add.group();
 		let theOtherGuy = this.createKorpus(100, 100, 0x00ff00);
@@ -150,10 +150,10 @@ export default class PlayScene extends Phaser.Scene {
 		this.paintKorpus(c, color, love, rage);
 
 		this.physics.add.existing(c);
+		c.body.setCircle(12, -12, -12);
 
 		this.input.enableDebug(c);
 
-		c.body.setCircle(12, -12);
 
 
 		return c;
@@ -163,10 +163,32 @@ export default class PlayScene extends Phaser.Scene {
 		c.clear();
 		c.fillStyle(color);
 
+		// horns
+		let r1 = 11, r2 = Math.round(r1 + 3 + 10 * rage), 
+			aP = -Math.PI / 4, aD = Math.PI / 6;
+		c.fillTriangle(
+			r1 * Math.cos(aP + aD), r1 * Math.sin(aP + aD), 
+			r1 * Math.cos(aP - aD), r1 * Math.sin(aP - aD),
+			r2 * Math.cos(aP), 		r2 * Math.sin(aP)
+		);
+		aP = -Math.PI - aP;
+		c.fillTriangle(
+			r1 * Math.cos(aP + aD), r1 * Math.sin(aP + aD), 
+			r1 * Math.cos(aP - aD), r1 * Math.sin(aP - aD),
+			r2 * Math.cos(aP), r2 * Math.sin(aP)
+		);
+
+		// body
 		c.beginPath();
 		c.arc(0, 0, 12, 0, Math.PI * 2);
 		c.closePath();
 		c.fill();
+
+		// heart
+		c.fillStyle(0xffffff, 0.2 + 0.8 * love);
+		c.fillCircle(-4, -3, 4);
+		c.fillCircle(4, -3, 4);
+		c.fillTriangle(-9, -2, 9, -2, 0, 9);
 	}
 
 	makeMe(c) {
