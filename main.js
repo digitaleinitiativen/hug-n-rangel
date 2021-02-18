@@ -1,0 +1,26 @@
+import PlayScene from './scenes/PlayScene.js'
+
+const config = {
+	type: Phaser.AUTO,
+	width: 400,
+	height: 400,
+	backgroundColor: '#000000',
+	parent: 'phaser',
+	physics: {
+		default: 'arcade',
+        arcade: {
+            debug: true,
+            debugShowBody: true,
+            debugShowStaticBody: true,
+            debugShowVelocity: true,
+            debugVelocityColor: 0xffff00,
+            debugBodyColor: 0x0000ff,
+            debugStaticBodyColor: 0xffffff
+         }
+	},
+	scene: [PlayScene]
+}
+
+let game = new Phaser.Game(config);
+
+export default game;
