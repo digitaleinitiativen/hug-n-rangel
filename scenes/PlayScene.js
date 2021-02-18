@@ -27,7 +27,7 @@ export default class PlayScene extends Phaser.Scene {
 	create() {
 		this.halos = this.add.graphics();
 
-		this.me = this.makeMe(this.createKorpus(200, 200, "0x" + ((1<<24)*Math.random() | 0).toString(16), 1, 1));
+		this.me = this.makeMe(this.createKorpus(180 * Math.random() + 10, 180 * Math.random() + 10, "0x" + ((1<<24)*Math.random() | 0).toString(16), 1, 1));
 
 		this.korpi = this.add.group();
 		let theOtherGuy = this.createKorpus(100, 100, 0x00ff00);
