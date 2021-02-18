@@ -96,6 +96,13 @@ export default class PlayScene extends Phaser.Scene {
 			repeat: 0,
 			onComplete: function() {
 				this.inAction = false;
+				a.setData("rage", Math.max(0, a.getData("rage") - 0.2));
+				b.setData("rage", Math.max(0, b.getData("rage") - 0.2));
+				a.setData("love", Math.min(1, a.getData("love") + 0.2));
+				b.setData("love", Math.min(1, b.getData("love") + 0.2));
+				this.paintKorpus(a);
+				this.paintKorpus(b);
+
 			},
 			callbackScope: this
 		});
@@ -118,6 +125,12 @@ export default class PlayScene extends Phaser.Scene {
 			repeat: 6,
 			onComplete: function() {
 				this.inAction = false;
+				a.setData("love", Math.max(0, a.getData("love") - 0.2));
+				b.setData("love", Math.max(0, b.getData("love") - 0.2));
+				a.setData("rage", Math.min(1, a.getData("rage") + 0.2));
+				b.setData("rage", Math.min(1, b.getData("rage") + 0.2));
+				this.paintKorpus(a);
+				this.paintKorpus(b);
 			},
 			callbackScope: this
 		});
@@ -133,12 +146,21 @@ export default class PlayScene extends Phaser.Scene {
 
 		this.input.enableDebug(c);
 
-
+		c.setData('love', love);
+		c.setData('rage', rage)
+		c.setData('color', color);
 
 		return c;
 	}
 
-	paintKorpus(c, color, love, rage) {
+	paintKorpus(c, color = null, love = null, rage = null) {
+
+		if(color == null) color = c.getData('color');
+		if(love == null) love = c.getData('love');
+		if(rage == null) rage = c.getData('rage');
+
+		console.log(c.getData("color"));
+
 		c.clear();
 		c.fillStyle(color);
 
