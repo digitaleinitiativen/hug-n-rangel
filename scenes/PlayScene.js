@@ -17,6 +17,11 @@ export default class PlayScene extends Phaser.Scene {
 		this.keyR = null;
 
 		this.inAction = false;
+
+		this.hugScore = 0;
+		this.hugScoreBox = null;
+		this.ranglScore = 0;
+		this.ranglScoreBox = null;
 	}
 
 	create() {
@@ -33,6 +38,16 @@ export default class PlayScene extends Phaser.Scene {
 		this.cursors = this.input.keyboard.createCursorKeys();
 		this.keyH = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.H);
 		this.keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
+
+
+		this.hugScoreBox = this.add.text(15, 15, "Hug: 0", {
+			color: 'white'
+		});
+		this.hugScoreBox.setOrigin(0, 0);
+		this.ranglScoreBox = this.add.text(15, 30, "Rangl: 0", {
+			color: 'white'
+		});
+		this.ranglScoreBox.setOrigin(0, 0);
 	}
 
 	update() {
@@ -106,6 +121,9 @@ export default class PlayScene extends Phaser.Scene {
 			},
 			callbackScope: this
 		});
+
+		this.hugScore = this.hugScore + 1;
+		this.hugScoreBox.setText("Hug: " + this.hugScore);
 	}
 
 	rangel(a, b) {
@@ -134,6 +152,9 @@ export default class PlayScene extends Phaser.Scene {
 			},
 			callbackScope: this
 		});
+
+		this.ranglScore = this.ranglScore + 1;
+		this.ranglScoreBox.setText("Rangl: " + this.ranglScore);
 	}
 
 	createKorpus(x, y, color, love = 1, rage = 0) {
