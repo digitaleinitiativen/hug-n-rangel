@@ -27,27 +27,71 @@ export default class PlayScene extends Phaser.Scene {
 	create() {
 		this.halos = this.add.graphics();
 
-		this.me = this.makeMe(this.createKorpus(200, 200, 0xff0000, 1, 1));
+		this.me = this.makeMe(this.createKorpus(200, 200, "0x" + ((1<<24)*Math.random() | 0).toString(16), 1, 1));
 
 		this.korpi = this.add.group();
 		let theOtherGuy = this.createKorpus(100, 100, 0x00ff00);
-		let theOtherOtherGuy = this.createKorpus(300, 300, 0x0000ff);
 		this.korpi.add(theOtherGuy);
-		this.korpi.add(theOtherOtherGuy);
 
 		this.cursors = this.input.keyboard.createCursorKeys();
 		this.keyH = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.H);
 		this.keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
 
 
-		this.hugScoreBox = this.add.text(15, 15, "Hug: 0", {
+		this.hugScoreBox = this.add.text(15, 15, "(H)ug: 0", {
 			color: 'white'
 		});
 		this.hugScoreBox.setOrigin(0, 0);
-		this.ranglScoreBox = this.add.text(15, 30, "Rangl: 0", {
+		this.ranglScoreBox = this.add.text(15, 30, "(R)angl: 0", {
 			color: 'white'
 		});
 		this.ranglScoreBox.setOrigin(0, 0);
+
+		this.multiplayer.event.on('socket.open', this.initConnection, this);
+
+		this.multiplayer.event.on('object.create', this.createObject, this);
+		this.multiplayer.event.on('object.update', this.updateObject, this);
+		this.multiplayer.event.on('object.pause', this.pauseObject, this);
+		this.multiplayer.event.on('object.kill', this.killObject, this);
+
+		this.multiplayer.track(this.me, this.featureExtractor);
+
+		this.multiplayer.connect();
+	}
+
+	initConnection() {
+		this.multiplayer.startBroadcast();
+	}
+
+	featureExtractor(object) {
+		return {
+			x: object.x,
+			y: object.y,
+			color: object.getData('color'),
+			love: object.getData('love'),
+			rage: object.getData('rage')
+		}
+	}
+
+	createObject(data, id) {
+		let korpus = this.createKorpus(data.x, data.y, data.color, data.love, data.rage);
+		this.korpi.add(korpus);
+
+		this.multiplayer.registerObject(id, korpus);
+	}
+
+	updateObject(object, data) {
+		object.x = data.x;
+		object.y = data.y;
+		object.setAlpha(1);
+	}
+
+	pauseObject(object, id) {
+		object.setAlpha(0.1);
+	}
+
+	killObject(object, id) {
+		object.destroy();
 	}
 
 	update() {
@@ -123,7 +167,7 @@ export default class PlayScene extends Phaser.Scene {
 		});
 
 		this.hugScore = this.hugScore + 1;
-		this.hugScoreBox.setText("Hug: " + this.hugScore);
+		this.hugScoreBox.setText("(H)ug: " + this.hugScore);
 	}
 
 	rangel(a, b) {
@@ -154,7 +198,7 @@ export default class PlayScene extends Phaser.Scene {
 		});
 
 		this.ranglScore = this.ranglScore + 1;
-		this.ranglScoreBox.setText("Rangl: " + this.ranglScore);
+		this.ranglScoreBox.setText("(R)angl: " + this.ranglScore);
 	}
 
 	createKorpus(x, y, color, love = 1, rage = 0) {
